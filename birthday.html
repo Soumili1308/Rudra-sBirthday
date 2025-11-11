@@ -1,0 +1,276 @@
+      <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday Rudra — Surprise</title>
+  <style>
+    :root{
+      --bg:#060606;
+      --neon-pink:#ff3aa6;
+      --neon-blue:#31d0ff;
+      --glass: rgba(255,255,255,0.03);
+      --card-radius:16px;
+      --ease: cubic-bezier(.2,.9,.25,1);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color: #fff;
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(circle at 10% 10%, rgba(49,208,255,0.04), transparent 8%), radial-gradient(circle at 90% 90%, rgba(255,58,166,0.03), transparent 8%), var(--bg);overflow-x:hidden;}
+    .app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;}
+    .card{width:100%;max-width:1200px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--card-radius);padding:24px;box-shadow: 0 8px 30px rgba(0,0,0,0.6);backdrop-filter: blur(6px);position:relative;overflow:hidden}
+    header{display:flex;align-items:center;gap:16px}
+    .title{font-size:28px;letter-spacing:0.6px}
+    .subtitle{font-size:13px;color:rgba(255,255,255,0.6)}
+
+    .main{display:grid;grid-template-columns: 1fr 380px;gap:24px;margin-top:20px}
+    .panel{background:var(--glass);padding:18px;border-radius:12px;min-height:520px;position:relative;overflow:hidden}
+
+    .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:18px}
+    .greeting{font-size:32px;font-weight:700;background:linear-gradient(90deg,var(--neon-pink),var(--neon-blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .sub{color:rgba(255,255,255,0.7)}
+
+    .cake-wrap{position:relative;width:360px;height:240px;cursor:pointer;}
+    .cake{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:280px;height:160px;border-radius:20px;background:linear-gradient(180deg,#2b2b2b,#111);box-shadow:0 12px 40px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:20px}
+    .frosting{width:260px;height:70px;background:linear-gradient(90deg,var(--neon-pink),var(--neon-blue));border-radius:14px;margin-bottom:8px;box-shadow:0 6px 18px rgba(50,0,80,0.25)}
+    .candles{display:flex;gap:14px;position:absolute;top:20px;left:50%;transform:translateX(-50%)}
+    .candle{width:8px;height:40px;background:linear-gradient(180deg,#fff,#eee);border-radius:4px;position:relative;display:flex;align-items:flex-start;justify-content:center}
+    .flame{position:absolute;top:-12px;width:10px;height:14px;border-radius:50%;background: radial-gradient(circle at 30% 30%, #fff0, #fff0 20%, #fff 21%, #ffd86b 40%, #ff7a00 60%);box-shadow:0 2px 8px rgba(255,120,50,0.9);opacity:1;transform-origin:center;transition:all .5s var(--ease)}
+    .candle.soff .flame{opacity:0;transform:scale(.2) translateY(-6px)}
+
+    .video-section{display:none;flex-direction:column;align-items:center;gap:16px;margin-top:20px}
+    video{max-width:100%;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+
+    .rightcol{display:flex;flex-direction:column;gap:20px}
+    .section{background:var(--glass);padding:16px;border-radius:10px;min-height:150px;transition:all .5s var(--ease)}
+    .section:hover{transform:translateY(-3px);}
+    h3{color:var(--neon-blue);margin-top:0;}
+
+    .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;margin-top:10px;}
+    .day-name{font-weight:700;color:var(--neon-pink);}
+    .day{padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);cursor:pointer;transition:all .3s var(--ease);}
+    .day:hover{background:linear-gradient(90deg,var(--neon-pink),var(--neon-blue));color:#000;}
+
+    .popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;border:2px solid var(--neon-pink);padding:20px;border-radius:10px;z-index:100;display:none;box-shadow:0 0 20px var(--neon-pink)}
+    .popup h4{margin:0 0 10px;color:var(--neon-blue);}
+    .popup button{margin-top:10px;padding:6px 12px;border:none;border-radius:6px;background:linear-gradient(90deg,var(--neon-pink),var(--neon-blue));cursor:pointer;font-weight:600;}
+
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px;}
+    .gallery-grid img{width:100%;border-radius:8px;transition:transform .4s var(--ease), box-shadow .4s var(--ease);}
+    .gallery-grid img:hover{transform:scale(1.05);box-shadow:0 0 10px var(--neon-blue);cursor:pointer;}
+
+    #confettiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
+
+    /* Fullscreen Image Popup */
+    #imagePopup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #imagePopup img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 30px var(--neon-blue);
+      animation: fadeIn .4s ease;
+    }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+  <audio id="bgMusic" loop></audio>
+
+  <div class="app">
+    <div class="card">
+      <header>
+        <div>
+          <div class="title">🎉 Happy Birthday Rudra</div>
+          <div class="subtitle">Wishing You A Very Happiest And Healthiest Birthday</div>
+        </div>
+      </header>
+      <div class="main">
+        <div class="panel">
+          <div class="hero" id="home">
+            <div class="greeting">Happy Birthday, Rudra!</div>
+            <div class="sub">Click the cake to start your surprise 🎂</div>
+            <div class="cake-wrap" id="cakeWrap">
+              <div class="candles" id="candles"></div>
+              <div class="cake"><div class="frosting"></div></div>
+            </div>
+            <div class="video-section" id="videoSection">
+              <video id="birthdayVideo" controls src="assets/video.mp4"></video>
+            </div>
+          </div>
+        </div>
+        <div class="rightcol">
+          <div class="section" id="calendar">
+            <h3>November Calendar and some secret messages</h3>
+            <div class="calendar" id="calendarGrid"></div>
+          </div>
+          <div class="section" id="voice">
+            <h3>My feelings via music</h3>
+            <audio id="voiceNote" controls src="assets/voice.mp3"></audio>
+          </div>
+          <div class="section" id="gallery">
+            <h3>Photo Gallery of Us</h3>
+            <div class="gallery-grid">
+              <img src="assets/photo1.jpg" alt="Photo 1">
+              <img src="assets/photo2.jpg" alt="Photo 2">
+              <img src="assets/photo3.jpg" alt="Photo 3">
+              <img src="assets/photo4.jpg" alt="Photo 4">
+              <img src="assets/photo5.jpg" alt="Photo 5">
+              <img src="assets/photo6.jpg" alt="Photo 6">
+              <img src="assets/photo7.jpg" alt="Photo 7">
+              <img src="assets/photo8.jpg" alt="Photo 8">
+              <img src="assets/photo9.jpg" alt="Photo 9">
+              <img src="assets/photo10.jpg" alt="Photo 10">
+              <img src="assets/photo11.jpg" alt="Photo 11">
+              <img src="assets/photo12.jpg" alt="Photo 12">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup" id="popup">
+    <h4 id="popupDate"></h4>
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+
+  <div id="imagePopup"><img id="popupImg" src=""></div>
+
+  <script>
+    /* --- Candle & Background Music --- */
+    const candlesEl = document.getElementById('candles');
+    for(let i=0;i<5;i++){ const c=document.createElement('div'); c.className='candle'; c.innerHTML='<div class="flame"></div>'; candlesEl.appendChild(c); }
+
+    const cakeWrap=document.getElementById('cakeWrap');
+    const videoSection=document.getElementById('videoSection');
+    const birthdayVideo=document.getElementById('birthdayVideo');
+    const bgMusic=document.getElementById('bgMusic');
+    bgMusic.src = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_bf7f4673c1.mp3?filename=happy-birthday-to-you-135646.mp3";
+    bgMusic.volume = 0.5;
+
+    /* --- Synth-based "Happy Birthday" --- */
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+    function getCtx(){ if(!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
+    function playNote(freq, time, duration){
+      const ctx = getCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type='sine';
+      o.frequency.setValueAtTime(freq, ctx.currentTime + time);
+      g.gain.setValueAtTime(0, ctx.currentTime + time);
+      g.gain.linearRampToValueAtTime(0.18, ctx.currentTime + time + 0.02);
+      g.gain.linearRampToValueAtTime(0, ctx.currentTime + time + duration);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime + time);
+      o.stop(ctx.currentTime + time + duration + 0.02);
+    }
+    const C4 = 261.63;
+    function nToFreq(n){ return C4 * Math.pow(2, n/12); }
+    const happy = [0,0,2,0,5,4, 0,0,2,0,7,5, 0,0,12,9,5,4,2, 10,10,9,5,7,5];
+    const happyDur=[.4,.2,.6,.6,.6,1, .4,.2,.6,.6,.6,1, .4,.2,.4,.4,.4,.4,.8, .4,.2,.6,.6,.6,1];
+    function playHappySynth(){
+      const ctx = getCtx(); let t = 0;
+      for(let i=0;i<happy.length;i++){
+        const freq = nToFreq(happy[i]);
+        playNote(freq, t, happyDur[i]);
+        t += happyDur[i];
+      }
+    }
+
+    async function startBackgroundMusic(){
+      try { await bgMusic.play(); } catch(e){ console.log(e); }
+    }
+
+    cakeWrap.addEventListener('click',()=>{
+      document.querySelectorAll('.candle').forEach(c=>c.classList.add('soff'));
+      setTimeout(()=>{
+        videoSection.style.display='flex';
+        birthdayVideo.play();
+        startConfetti();
+        startBackgroundMusic();
+        playHappySynth();
+      },600);
+    });
+
+    /* --- Calendar --- */
+    const calendarGrid = document.getElementById('calendarGrid');
+    const popup = document.getElementById('popup');
+    const popupDate = document.getElementById('popupDate');
+    const popupMessage = document.getElementById('popupMessage');
+    const messages = {1: "Hmm.... So it's NNN and you were born? Sounds normal! But, Hey! It's Your Birthday Month. 🎉",
+      2:"Now everyday of november is special because of you. You're the light that I never knew I would need this desperately!",
+      3:"It's about you always in my life, 365 days. Just YOU and You and YOUUUUUU.",
+      4:"I don't get it why you don't count the dates till your birthday. Is it because it's in the end of the month?",
+      5: "Counting down to your special day! Because you're too busy to do that. Well let me help you out!",
+      6:"You're the most amazing person I've ever met. You are so fun, I don't find you mean at all!",
+      7:"Not gonna lie, sometimes you're mean. You made me cry a lot. But you make me smile like a child. My heart always skips a beat while looking at your face.",
+      8:"Without talking to you my whole day feels dull. You use all these flirty texts and shayaris to make my day better.",
+      9: "Almost there, Rudra! 💫 Chill babe, it's going to be a lovely month trust me.",
+      10: "Your Birthday is not just a day. It's more like a festival to me. A day to remember that you were born just to be mine.",
+      11: "The celebration continues! 🥳 I'll make your pockets empty by partying all night. Kidding you know that I'm not a party animal. But you are my darling.",
+      12:"Fighting with you is as much necessary as breathing in my life. Without irritating you I feel bored.",
+      13:"I was born on this date as you know. So it's a lucky number in my life and I always want that you will achive everything in your life.",
+      14:"Whatever you've dreamt it'll come true and I'll be by your side through good and bad, health and sickness, lows and highs.",
+      15:"Have you ever thought You will meet an awesome girl like me? Who will make your life like a daily soap but in a better way?",
+      16:"Eh, you don't know yet but when I'll marry you I'll make you do all the chores. OH WAIT! You already know that. HAHAHAHA",
+      17:"Whenever I look back I feel like we were the characters from a book where best friends became soulmates.",
+      18:"The day we started talking in 2021 in personal Whatsapp chat. First time it was just the two of us getting to know each other better.",
+      19:"And you made sure by this day that you were determinded to win my heart by saying that I should give my heart to you to keep it safe from a theif.",
+      20: "You little stalker already stalked my instagram account and were always teasing me about making reels which turned out be making your assignments by me at the end.",
+      21:"After a lot of disagreements we came to a conclusion that you podu is very small like a cute small peach. LOL.",
+      22:"How much I've controlled you just by showing my boobs. I know your weak points hubby and I'll use it in arguments just to win.",
+      23:"Random muscle flexing is constant. and biting and scratching your arm is my responsibility.",
+      24:"After the infinite time breakup, we just patch up and forget about yesterday as if it never happened. hmmm... such weirdos we are!",
+      25:"And gifting you something is a disaster. Like an onion figuring you out is a hell lot of a work under all those layers.",
+      26:"You're dumb enough to always ignore my advice and then comeback to me to rant about how you screwed up and then the classic I TOLD YOU SO in the end.",
+      27:"We are like two big montains EGO and EGO yet we co exist so well like fire and water because we're in LOVE.",
+      28:"I don't tell you enough, but heres the thing; You're the most strong, loyal, handsome, fun, wise person I've ever met and you're Everything to me.",
+      29:"I Love You so much Rudrayan Dey that I can't live without you. You're my blessing and miracle. You're my Hope to to live long and enjoy my life. HAPPY BIRTHDAY RUDRA, the light of my life.",
+      30: "Wrapping up November with good vibes! We're each others soulmate and one day both of our families will celebrate your birthday together as I stand by your side as your proud wife."};
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    days.forEach(d=>{ const dn=document.createElement('div'); dn.className='day-name'; dn.textContent=d; calendarGrid.appendChild(dn); });
+    const year = new Date().getFullYear(); const firstDay = new Date(year,10,1).getDay(); const daysInNov = 30;
+    for(let i=0;i<firstDay;i++){ calendarGrid.appendChild(document.createElement('div')); }
+    for(let d=1;d<=daysInNov;d++){ const day=document.createElement('div'); day.className='day'; day.textContent=d;
+      day.addEventListener('click',()=>{ popupDate.textContent=`November ${d}`; popupMessage.textContent=messages[d]||"No message yet."; popup.style.display='block'; });
+      calendarGrid.appendChild(day);
+    }
+    function closePopup(){popup.style.display='none';}
+
+    /* --- Gallery Fullscreen Popup --- */
+    const imgs=document.querySelectorAll('.gallery-grid img');
+    const imagePopup=document.getElementById('imagePopup');
+    const popupImg=document.getElementById('popupImg');
+    imgs.forEach(img=>img.addEventListener('click',()=>{ popupImg.src=img.src; imagePopup.style.display='flex'; }));
+    imagePopup.addEventListener('click',()=>{ imagePopup.style.display='none'; });
+
+    /* --- Confetti --- */
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const ctx = confettiCanvas.getContext('2d');
+    let confettis=[];
+    function resizeCanvas(){ confettiCanvas.width=window.innerWidth*devicePixelRatio; confettiCanvas.height=window.innerHeight*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+    window.addEventListener('resize',resizeCanvas); resizeCanvas();
+    function startConfetti(){
+      const colors=['#ff3aa6','#31d0ff','#ffd700','#7CFC00','#FF7A00','#DA70D6','#00CED1'];
+      confettis=Array.from({length:250},()=>({x:Math.random()*window.innerWidth,y:Math.random()*-window.innerHeight,w:8,h:12,dx:(Math.random()-0.5)*2,dy:Math.random()*4+2,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,drot:(Math.random()-0.5)*10}));
+      animateConfetti(); setTimeout(()=>confettis=[],8000);
+    }
+    function animateConfetti(){
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettis.forEach(c=>{ ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.rot*Math.PI/180); ctx.fillStyle=c.color; ctx.fillRect(-c.w/2,-c.h/2,c.w,c.h); ctx.restore(); c.x+=c.dx; c.y+=c.dy; c.rot+=c.drot; if(c.y>window.innerHeight+20)c.y=-20; });
+      if(confettis.length>0) requestAnimationFrame(animateConfetti);
+    }
+  </script>
+</body>
+</html>
